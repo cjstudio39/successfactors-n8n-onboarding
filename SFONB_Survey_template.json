@@ -1,0 +1,188 @@
+{
+  "name": "SFONB_Survey",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sf-onboarding-survey",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0aff8894-9b74-4403-8272-1c777c916f64",
+      "name": "Webhook",
+      "webhookId": "<GENERATED_ON_IMPORT>",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "<YOUR_BASIC_AUTH_CREDENTIAL_ID>",
+          "name": "<YOUR_BASIC_AUTH_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst email = body.Email;\nconst firstName = body.FirstName;\nconst lastName = body.LastName;\n\nreturn [\n  {\n    json: {\n      email,\n      firstName,\n      lastName,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d648fcb8-7061-434c-aa8d-020087d3f6cc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "efcd7690-d4b6-4744-b6e6-6b92b7dbfe4d",
+              "name": "SurveyLink",
+              "value": "=https://docs.google.com/forms/d/e/<YOUR_GOOGLE_FORM_ID>/viewform?usp=pp_url&entry.<GOOGLE_FORM_EMAIL_ENTRY_ID>={{ encodeURIComponent($json.email) }}",
+              "type": "string"
+            },
+            {
+              "id": "d76ca3e4-4c8d-4f45-abc8-34e9120edd2c",
+              "name": "subject",
+              "value": "We’d love your feedback",
+              "type": "string"
+            },
+            {
+              "id": "5ab38b75-40ca-4721-8c0b-34689cbbf995",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "6c3d8b12-1e2f-4a9c-9d7e-8f4b2a6c5e11",
+              "name": "firstName",
+              "value": "={{ $json.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "7d4e9c23-2f3a-4b0d-8e8f-9a5c3b7d6f22",
+              "name": "lastName",
+              "value": "={{ $json.lastName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "db830af2-18f5-4e62-a493-d85a5acfde10",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fromEmail": "<YOUR_SENDER_EMAIL>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "html": "=<div style=\"background-color:#f4f6f8;padding:30px 0;font-family:Arial,Helvetica,sans-serif;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr>\n      <td align=\"center\">\n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff;border-radius:8px;padding:30px;\">\n          \n          <!-- Header -->\n          <tr>\n            <td style=\"font-size:20px;font-weight:bold;color:#333333;padding-bottom:20px;\">\n              We’d love your feedback 💬\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"font-size:14px;color:#444444;line-height:1.6;padding-bottom:20px;\">\n              Hi <strong>{{ $json.firstName }}</strong>,<br><br>\n\n              Thank you for your application. We truly appreciate the time and effort you put into it.<br><br>\n\n              To help us improve our recruitment experience, we’d love to hear your feedback by completing a short survey.\n            </td>\n          </tr>\n\n          <!-- CTA Button -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px 0;\">\n              <a href=\"{{ $json.SurveyLink }}\"\n                 style=\"background-color:#2563eb;color:#ffffff;\n                        text-decoration:none;padding:12px 24px;\n                        border-radius:6px;font-size:14px;\n                        display:inline-block;\">\n                Take the Survey\n              </a>\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td style=\"font-size:12px;color:#777777;line-height:1.6;padding-top:20px;border-top:1px solid #eeeeee;\">\n              Best regards,<br>\n              <strong>HR Team</strong><br><br>\n\n              <span style=\"color:#aaaaaa;\">\n                This email was sent automatically. Please do not reply.\n              </span>\n            </td>\n          </tr>\n\n        </table>\n      </td>\n    </tr>\n  </table>\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        -100
+      ],
+      "id": "45861201-847f-4ded-8ead-6984e8260e8c",
+      "name": "Send email",
+      "credentials": {
+        "smtp": {
+          "id": "<YOUR_SMTP_CREDENTIAL_ID>",
+          "name": "<YOUR_SMTP_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "<YOUR_TELEGRAM_CHAT_ID>",
+        "text": "=🎉 Onboarding Update\n\nCandidate: {{ $json.firstName }} {{ $json.lastName }}\nEmail: {{ $json.email }}\n\nStatus: Onboarding signature step completed. Record is now waiting in Manage Pending Hire (MPH) for HR action.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        150
+      ],
+      "id": "9a1b2c3d-4e5f-4a6b-8c7d-1e2f3a4b5c6d",
+      "name": "Notify Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "<TELEGRAM_CREDENTIAL_ID>",
+          "name": "<TELEGRAM_CREDENTIAL_NAME>"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1,
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
