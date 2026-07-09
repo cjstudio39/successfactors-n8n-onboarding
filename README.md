@@ -32,7 +32,7 @@ SAP SuccessFactors                          n8n (self-hosted)
 2. **Webhook** — open the Webhook node, keep or rename the `sf-onboarding-survey` path, create a Basic Auth credential (any username/password), attach it, then activate and copy the **production** webhook URL.
 3. **Credentials** — attach your own SMTP/Gmail credential on the *Send email* node (set `<YOUR_SENDER_EMAIL>`); create a Telegram bot via [@BotFather](https://t.me/botfather), attach the token, and set `<YOUR_TELEGRAM_CHAT_ID>` (add the bot to your HR group, then read the chat ID from `https://api.telegram.org/bot<TOKEN>/getUpdates`).
 4. **Google Form** — in the *Edit Fields* node, replace `<YOUR_GOOGLE_FORM_ID>` and `<GOOGLE_FORM_EMAIL_ENTRY_ID>` with your own form's values (use the form's *Get pre-filled link* to find the `entry.XXXXXXXXX` ID).
-5. **SuccessFactors** — in Integration Center, create an outbound integration triggered on the onboarding document-signed event. Map **exactly** these field names: `Email`, `FirstName`, `LastName` (the Code node reads `body.Email`, etc.). Destination = your n8n production webhook URL, with the Basic Auth from step 2. The trigger and mapping are shown in the [video](YOUR_YOUTUBE_LINK).
+5. **SuccessFactors** — in Integration Center, create an outbound integration triggered on the onboarding document-signed event. Map **exactly** these field names: `Email`, `FirstName`, `LastName` (the Code node reads `body.Email`, etc.). Destination = your n8n production webhook URL, with the Basic Auth from step 2. The trigger and mapping are shown in the [video](https://youtu.be/BC5-ARPxeDo).
 
 ## Test without SF
 
