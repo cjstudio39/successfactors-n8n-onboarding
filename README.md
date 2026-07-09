@@ -7,7 +7,7 @@ Connect **SAP SuccessFactors Onboarding** to the outside world — **without BTP
 
 Built with **Integration Center** (already included in your SF subscription) and a self-hosted **n8n** instance.
 
-▶️ **Watch the full walkthrough:** [YouTube video](YOUR_YOUTUBE_LINK)
+▶️ **Watch the full walkthrough:** [YouTube video](https://youtu.be/BC5-ARPxeDo)
 📄 **Guide + download page:** [cjstudio.site/sapsf-to-n8n](https://cjstudio.site/sapsf-to-n8n/)
 
 ## How it works
